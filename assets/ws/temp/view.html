@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ dirpath }} {% rstr v_path %}{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ SERV_ROOT_DIR }}css/wsf.view.css">
+    <script>
+        var MSG = {
+            'tip': '{% rstr v_tip %}',
+            'del_msg': '{% rstr v_del_msg %}',
+            'del_fail': '{% rstr v_del_fail %}',
+            'up_fail': '{% rstr v_up_fail %}',
+            'not_allow': '{% rstr v_not_allow %}',
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+    {% include "confirm.html" %}
+    <p>&nbsp;</p>
+    <h1 id="header">{{ dirpath }} {% rstr v_path %}</h1>
+    <table id="table">
+        <tr class="header">
+            <td>{% rstr v_name %}</td>
+            <td class="detailsColumn">{% rstr v_size %}</td>
+            <td class="detailsColumn">{% rstr v_modi %}</td>
+            <td class="detailsColumn">{% rstr v_oper %}</td>
+        </tr>
+        {% if hasParent %}
+        <tr>
+            <td><a class="icon up" href="..">[{% rstr v_parent %}]</a></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endif %}
+        {% if fileRows %}
+            {% for row in fileRows %}
+                <tr>
+                    <td><a class="{{ row.clazz }}" href="{% if row.can_browse %}{{ row.link }}{% else %}javascript:void(0);{% endif %}">{{ row.name }}</a></td>
+                    <td class="detailsColumn">{{ row.size }}</td>
+                    <td class="detailsColumn">{{ row.time }}</td>
+                    <td class="operateColumn">
+                        {% if row.can_download %}<a class="download btn small" href="javascript:void(0);">{% rstr v_download %}</a>{% endif %}
+                        {% if row.can_delete %}<a class="delete btn small" href="javascript:void(0);">{% rstr v_delete %}</a>{% endif %}
+                        {% if row.can_upload %}
+                        <a class="upload btn small fbtn" href="javascript:void(0);">{% rstr v_upload %}<input id="{% uuid %}" type="file" name="{{ row.name }}"></a>
+                        <div class="meter animate" style="display:none;"><span style="width: 50%"><span></span></span></div>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+    <hr noshade>
+    <em>{% rstr v_wel_to %} <a target="_blank" href="https://github.com/joinAero/AndroidWebServ/">AndroidWebServ Source</a>!</em>
+    <p>&nbsp;</p>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ SERV_ROOT_DIR }}js/jquery-1.9.1.min.js"></script>
+    <script src="{{ SERV_ROOT_DIR }}js/ajaxfileupload.min.js"></script>
+    <script src="{{ SERV_ROOT_DIR }}js/wsf.confirm.js"></script>
+    <script src="{{ SERV_ROOT_DIR }}js/wsf.view.js"></script>
+{% endblock %}
