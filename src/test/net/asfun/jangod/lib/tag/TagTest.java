@@ -8,21 +8,25 @@ import net.asfun.jangod.interpret.InterpretException;
 import net.asfun.jangod.interpret.JangodInterpreter;
 import net.asfun.jangod.lib.TagLibrary;
 import net.asfun.jangod.parse.TokenParser;
-import android.test.AndroidTestCase;
+import android.app.Instrumentation;
+import android.test.InstrumentationTestCase;
 import android.util.Log;
 
-public class TagTest extends AndroidTestCase {
+public class TagTest extends InstrumentationTestCase {
 
     static final String TAG = "TagTest";
+
+    Instrumentation mInstru;
 
     JangodInterpreter interpreter;
 
     @Override
     protected void setUp() throws Exception {
+        mInstru = getInstrumentation();
 
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("var1", "app_name");
-        data.put("var2", "bg");
+        data.put("var2", "result_view");
 
         Context context = new Context();
         context.initBindings(data, Context.SCOPE_GLOBAL);
@@ -32,17 +36,33 @@ public class TagTest extends AndroidTestCase {
 
     public void testResStrTag() throws Exception {
         Log.e(TAG, "testResStrTag");
-        TagLibrary.addTag(new ResStrTag());
-        String script = "{% rstr var1 %} is {% rstr 'app_name' %}";
-        assertEquals("WifiShare is WifiShare", eval(script));
+        mInstru.runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                TagLibrary.addTag(new ResStrTag());
+                String script = "{% rstr var1 %} is {% rstr 'app_name' %}";
+                try {
+                    assertEquals("WebServ is WebServ", eval(script));
+                } catch (InterpretException e) {
+                }
+            }
+        });
     }
 
     public void testResColorTag() throws Exception {
         Log.e(TAG, "testResColorTag");
-        TagLibrary.addTag(new ResColorTag());
-        String script = "{% rcolor var2 %} or {% rcolor 'bg' %}";
-        Log.e(TAG, eval(script));
-        assertEquals("#fffffbde or #fffffbde", eval(script));
+        mInstru.runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                TagLibrary.addTag(new ResColorTag());
+                String script = "{% rcolor var2 %} or {% rcolor 'result_view' %}";
+                try {
+                    Log.e(TAG, eval(script));
+                    assertEquals("#b0000000 or #b0000000", eval(script));
+                } catch (InterpretException e) {
+                }
+            }
+        });
     }
 
     public void testUUIDTag() throws Exception {
