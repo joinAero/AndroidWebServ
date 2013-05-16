@@ -20,7 +20,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.join.ws.Constants.Config;
-import org.join.ws.serv.req.obj.FileRow;
+import org.join.ws.serv.req.objs.FileRow;
 import org.join.ws.serv.support.Progress;
 import org.join.ws.serv.view.ViewFactory;
 import org.join.ws.util.CommonUtil;
